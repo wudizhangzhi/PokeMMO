@@ -7,9 +7,10 @@
     "dev": "vite"
   },
   "dependencies": {
+    "@heroiclabs/nakama-js": "^2.6.1",
     "phaser": "^3.60.0",
-    "uuid": "^9.0.0",
-    "@heroiclabs/nakama-js": "^2.6.1"
+    "pokemmo-phaser3": "^1.0.0",
+    "uuid": "^9.0.0"
   },
   "author": "",
   "license": "MIT",
