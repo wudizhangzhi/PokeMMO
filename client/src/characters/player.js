@@ -51,6 +51,7 @@ export default class Player extends Character {
         } else {
             this.anims.stop();
         }
+        // console.log("角色位置: ", this.x, this.y)
     }
 
 

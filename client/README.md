@@ -1,12 +1,27 @@
-# TODO
+#
+
+## Purpose
+
+Find Game Jobs
+
+## WHAT？
+
+1.Multi player online
+
+competion, compare, communicate
+
+2.What kind of demo to create?
+
+Roglike? Galgame ?
+
+## TODO
 
 - [ ] 玩家
   - [x] 行走
   - [ ] 与世界交互
   - [ ] 与npc交互
 - [ ] NPC
-  - [ ] 自动行走
-  - [ ] 与玩家交互
+  - [ ] npc行为树
 - [ ] 宝可梦
   - [ ] 动作
 - [ ] 战斗
