@@ -83,68 +83,89 @@ export default class SceneTest extends Phaser.Scene {
         });
 
         this.input.keyboard.on("keydown-W", event => {
-            let x = this.cameras.main.worldView.x
-            let y = this.cameras.main.worldView.y
-            let width = this.cameras.main.worldView.width
-            let height = this.cameras.main.worldView.height
 
-            console.log("worldView: ", x, y, width, height)
-            let content = "这是字符串-" + Math.floor(Math.random() * (100 + 1));
-            let text = this.add.text(
-                Math.floor(Math.random() * (x + width - x + 1)) + x,   // TODO 需要计算到视野边界
-                Math.floor(Math.random() * (y + height - 10 + 1)) + y, // 需要计算到视野边界
-                content,
-                {
-                    fontSize: Math.floor(Math.random() * (32 - 10 + 1)) + 10 + 'px',
-                    fill: '#ffffff'
+        });
+
+        var timeEvent = this.time.addEvent({
+            delay: 1000,
+            loop: true,
+            callback: function () {
+                let x = this.cameras.main.worldView.x
+                let y = this.cameras.main.worldView.y
+                let width = this.cameras.main.worldView.width
+                let height = this.cameras.main.worldView.height
+                console.log("worldView: ", x, y, width, height)
+                // 10种颜色
+                let colorList = [
+                    '#FF5733', // 炫彩橙色
+                    '#C70039', // 炫彩红色
+                    '#900C3F', // 炫彩紫红色
+                    '#581845', // 炫彩深紫色
+                    '#1C2833', // 炫彩深蓝色
+                    '#17202A', // 炫彩深灰色
+                    '#28B463', // 炫彩绿色
+                    '#F4D03F', // 炫彩黄色
+                    '#F1948A', // 炫彩粉色
+                    '#85C1E9'  // 炫彩天蓝色
+                ];
+                for (let i = 0; i < 10; i++) {
+                    let content = "这是字符串-" + Math.floor(Math.random() * (100 + 1));
+                    let text = this.add.text(
+                        Math.floor(Math.random() * (x + width - x + 1)) + x,   // TODO 需要计算到视野边界
+                        Math.floor(Math.random() * (y + height - 10 + 1)) + y, // 需要计算到视野边界
+                        content,
+                        {
+                            fontSize: Math.floor(Math.random() * (32 - 10 + 1)) + 10 + 'px',
+                            fill: colorList[i]
+                        }
+                    )
+                    // this.danmu_pools.push(text)
+                    this.physics.world.enable([this.player, text]);
+                    this.physics.add.collider(this.player, text, function (object1, object2) {
+                        console.log('碰撞发生了！', object1, object2,);
+                        object2.destroy(); // 销毁弹幕
+                        timeEvent.remove(); // 停止定时任务
+                        // 隐藏游戏结束弹窗
+                    });
+                    this.add.text(text)
+                    let targetX = this.player.x;
+                    let targetY = this.player.y;
+                    let duation = 3000; // 需要根据距离算动态
+                    this.tweens.add({
+                        targets: text,
+                        x: targetX,
+                        y: targetY,
+                        duration: duation,
+                        ease: 'Linear',
+                        repeat: 0, // 如果要循环移动，可以设置为-1
+                        yoyo: false, // 如果要往返移动，可以设置为true
+                        persist: false,
+                        onComplete: function () {
+                            console.log("动画结束")
+                            text.destroy(); // 在动画结束后销毁精灵对象
+                        },
+                        onStart: function () {
+
+                        }
+                    });
                 }
-            )
-            this.danmu_pools.push(text)
-            this.physics.world.enable([this.player, text]);
-            this.physics.add.collider(this.player, text, function () {
-                console.log('碰撞发生了！');
-            })
-            console.log("弹幕池长度: ", this.danmu_pools.length)
 
-            setInterval(function () { }, 500)
-        })
+                console.log("弹幕池长度: ", this.danmu_pools.length)
+            },
+            callbackScope: this,
+        });
 
     }
 
     update(time, delta) {
         this.player.update(time, delta);
-        for (var i = 0; i < this.danmu_pools.length; i++) {
-            var currentItem = this.danmu_pools[i];
+        // for (var i = 0; i < this.danmu_pools.length; i++) {
+        //     var currentItem = this.danmu_pools[i];
 
-            this.add.text(currentItem)
-            let targetX = this.player.x;
-            let targetY = this.player.y;
-            let duation = 3000; // 需要根据距离算动态
-            this.tweens.add({
-                targets: currentItem,
-                x: targetX,
-                y: targetY,
-                duration: duation,
-                ease: 'Linear',
-                repeat: 0, // 如果要循环移动，可以设置为-1
-                yoyo: false, // 如果要往返移动，可以设置为true
-                persist: false,
-                onComplete: function () {
-                    currentItem.destroy(); // 在动画结束后销毁精灵对象
-                },
-                onStart: function () {
-
-                }
-            });
-            this.danmu_pools.splice(i, 1);
-        }
-
-        // this.danmu_pools.forEach(function (currentItem, index) {
-        //     // 根据需要对当前元素进行操作
         //     this.add.text(currentItem)
-        //     let targetX = 0;
-        //     let targetY = 0;
-        //     let duation = 3000;
+        //     let targetX = this.player.x;
+        //     let targetY = this.player.y;
+        //     let duation = 3000; // 需要根据距离算动态
         //     this.tweens.add({
         //         targets: currentItem,
         //         x: targetX,
@@ -152,10 +173,19 @@ export default class SceneTest extends Phaser.Scene {
         //         duration: duation,
         //         ease: 'Linear',
         //         repeat: 0, // 如果要循环移动，可以设置为-1
-        //         yoyo: false // 如果要往返移动，可以设置为true
+        //         yoyo: false, // 如果要往返移动，可以设置为true
+        //         persist: false,
+        //         onComplete: function () {
+        //             console.log("动画结束")
+        //             currentItem.destroy(); // 在动画结束后销毁精灵对象
+        //         },
+        //         onStart: function () {
+
+        //         }
         //     });
-        //     list.splice(index, 1);
-        // });
+        //     this.danmu_pools.splice(i, 1);
+        // }
+
     }
 
     debugGraphics() {
